@@ -4,9 +4,10 @@
 #include "config.h"
 #include "util.h"
 #include <cstdio>
-#include <driver_types.h>
 #include <stdint.h>
 #include <vector>
+
+using cudaStream_t = struct CUstream_st *;
 
 namespace simsense {
 
