@@ -35,23 +35,15 @@ public:
                     float _b1, float _b2, float _b3, bool _dilation, float _mainFx, float _mainFy,
                     float _mainSkew, float _mainCx, float _mainCy);
 
-  void compute(Mat2d<uint8_t> left, Mat2d<uint8_t> right);
+  void compute(Mat2d<uint8_t> left, Mat2d<uint8_t> right, bool bbox, uint32_t bboxStartX,
+               uint32_t bboxStartY, uint32_t bboxWidth, uint32_t bboxHeight);
 
-  // void compute(DLManagedTensor *leftDLMTensor, DLManagedTensor *rightDLMTensor);
-
-  void compute(void *leftCuda, void *rightCuda);
+  void compute(void *leftCuda, void *rightCuda, bool bbox, uint32_t bboxStartX,
+               uint32_t bboxStartY, uint32_t bboxWidth, uint32_t bboxHeight);
 
   Mat2d<float> getMat2d();
 
-  // DLManagedTensor *getDLTensor();
-
   Mat2d<float> getPointCloudMat2d();
-
-  // DLManagedTensor *getPointCloudDLTensor();
-
-  // Mat2d<float> getRgbPointCloudMat2d(DLManagedTensor *rgbaDLMTensor);
-
-  // DLManagedTensor *getRgbPointCloudDLTensor(DLManagedTensor *rgbaDLMTensor);
 
   int getCudaId();
   void *getCudaPtr();
@@ -76,10 +68,11 @@ protected:
   cudaStream_t stream1, stream2, stream3;
   void *d_irNoiseStates0, *d_irNoiseStates1;
   float *d_mapLx, *d_mapLy, *d_mapRx, *d_mapRy, *d_a1, *d_a2, *d_a3;
-  uint8_t *d_rawim0, *d_rawim1, *d_noisyim0, *d_noisyim1, *d_recim0, *d_recim1;
+  uint8_t *d_rawim0, *d_rawim1, *d_noisyim0, *d_noisyim1, *d_recim0, *d_recim1, *d_bboxim0,
+      *d_bboxim1;
   uint32_t *d_census0, *d_census1;
   cost_t *d_rawcost, *d_hsum, *d_cost, *d_L0, *d_L1, *d_L2, *d_LAll;
-  float *d_leftDisp, *d_filteredDisp, *d_depth, *d_rgbDepth, *h_depth;
+  float *d_leftDisp, *d_filteredDisp, *d_bboxDisp, *d_depth, *d_rgbDepth, *h_depth;
   float *d_pc, *d_rgbPc, *h_pc, *h_rgbPc;
   uint16_t *d_rightDisp;
   float speckleShape, speckleScale, gaussianMu, gaussianSigma;
@@ -90,7 +83,8 @@ protected:
   bool rectified, registration, dilation, computed;
   std::shared_ptr<float> depthContainer, pcContainer, rgbPcContainer;
 
-  void computeDepth(uint8_t *d_rawim0, uint8_t *d_rawim1);
+  void computeDepth(uint8_t *d_rawim0, uint8_t *d_rawim1, bool bbox, uint32_t bboxStartX,
+                    uint32_t bboxStartY, uint32_t bboxWidth, uint32_t bboxHeight);
 };
 
 } // namespace simsense
